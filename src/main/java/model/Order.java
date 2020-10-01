@@ -4,27 +4,30 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class Order {
-    private Long id;
+    private Long orderId;
     private List<Product> products;
-    private Long userId;
+    private User user;
     private  LocalDateTime orderDate;
+    private static Long generateId = 0L;
 
     public Order() {
-
+        generateId = generateId + 1;
+        this.orderId = generateId;
     }
-    public Order(Long id, List<Product> products, Long userId, LocalDateTime orderDate) {
-        this.id = id;
+
+    public Order(Long orderId, List<Product> products, User user, LocalDateTime orderDate) {
+        this.orderId = orderId;
         this.products = products;
-        this.userId = userId;
+        this.user = user;
         this.orderDate = orderDate;
     }
 
-    public Long getId() {
-        return id;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     public List<Product> getProducts() {
@@ -35,12 +38,12 @@ public class Order {
         this.products = products;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public LocalDateTime getOrderDate() {
