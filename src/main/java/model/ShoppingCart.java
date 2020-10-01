@@ -3,40 +3,45 @@ package model;
 import java.util.List;
 
 public class ShoppingCart {
-    private  Long id;
+    private static Long generateId = 0L;
+    private Long bucketId;
     private List<Product> products;
-    private Long userId;
+    private User user;
 
     public ShoppingCart() {
-
-    }
-    public ShoppingCart(Long id, List<Product> products, Long userId) {
-        this.id = id;
-        this.products = products;
-        this.userId = userId;
+        generateId = generateId + 1;
+        this.bucketId = generateId;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getBucketId() {
 
-    public void setId(Long id) {
-        this.id = id;
+        return bucketId;
     }
-
     public List<Product> getProducts() {
         return products;
     }
 
     public void setProducts(List<Product> products) {
+
         this.products = products;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+
+        this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "ShoppingCart{" +
+                "bucketId=" + bucketId +
+                ", products=" + products +
+                ", user=" + user +
+                '}';
     }
 }

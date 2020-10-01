@@ -1,25 +1,23 @@
 package model;
 
 public class User {
-    private Long id;
+    private static Long generateId = 0L;
+    private Long userId;
     private String name;
     private String password;
 
     public User () {
-
+        generateId = generateId + 1;
+        this.userId = generateId;
     }
-    public User(Long id, String name, String password) {
-        this.id = id;
+    public User(String name, String password) {
+        this.userId = generateId;;
         this.name = name;
         this.password = password;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public Long getUserId() {
+        return userId;
     }
 
     public String getName() {
@@ -37,4 +35,14 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }
+
