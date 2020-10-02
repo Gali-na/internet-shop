@@ -2,10 +2,13 @@ package daoImpl;
 
 import Storage.StorageUser;
 import dao.DaoUser;
+import lib.DaoInjectUser;
 import model.User;
 
 import java.util.List;
 import java.util.Optional;
+
+@DaoInjectUser
 
 public class DaoUserImpl implements DaoUser {
     @Override
@@ -15,14 +18,10 @@ public class DaoUserImpl implements DaoUser {
     }
 
     @Override
-    public User get(Long id) {
-        Optional<User> person = StorageUser.users.stream()
+    public Optional<User> get(Long id) {
+     return StorageUser.users.stream()
                 .filter(user -> user.getUserId().equals(id))
                 .findFirst();
-        if (person.isPresent()) {
-            return person.get();
-        }
-        return null;
     }
 
     @Override

@@ -1,14 +1,17 @@
 package daoImpl;
 
+import Storage.StorageProduct;
 import Storage.StorageShoppingCart;
 import dao.DaoShoppingCart;
+import lib.DaoInjectShoppingCart;
 import model.Product;
 import model.ShoppingCart;
-import model.User;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+@DaoInjectShoppingCart
 public class DaoShoppingCartImpl implements DaoShoppingCart {
 
 
@@ -52,17 +55,27 @@ public class DaoShoppingCartImpl implements DaoShoppingCart {
     }
 
     @Override
-    public ShoppingCart getByUserId(Long userId) {
-       Optional<ShoppingCart> shoppingCart = StorageShoppingCart.shoppingCarts.stream().
+    public Optional<ShoppingCart> get(Long userId) {
+        return   StorageShoppingCart.shoppingCarts.stream().
                 filter(cart->cart.getUser().getUserId().equals(userId))
                 .findFirst();
-       if(shoppingCart.isPresent()) {
-          return shoppingCart.get();
+    }
+
+    @Override
+    public ShoppingCart update(ShoppingCart shoppingCart) {
+      Optional <Integer> namberShopingCartForAbdate= StorageShoppingCart.shoppingCarts.stream()
+              .filter(shoppingCartForUpdate-> shoppingCartForUpdate.getBucketId().equals(shoppingCart.getBucketId()))
+              .map(shoppingCartForUpdate-> StorageShoppingCart.shoppingCarts.indexOf(shoppingCartForUpdate))
+              .findFirst();
+       if( namberShopingCartForAbdate.isPresent()) {
+           StorageShoppingCart.shoppingCarts.set(namberShopingCartForAbdate.get(),shoppingCart);
+           return shoppingCart;
        }
         return null;
     }
+
     @Override
-    public boolean deleteShoppingCart(Long idShoppingCart) {
+    public boolean delete(Long idShoppingCart) {
     Optional<ShoppingCart> shoppingCart = StorageShoppingCart.shoppingCarts.stream()
                 .filter(cart-> cart.getBucketId().equals(idShoppingCart))
                 .findFirst();
@@ -70,5 +83,11 @@ public class DaoShoppingCartImpl implements DaoShoppingCart {
             return StorageShoppingCart.shoppingCarts.remove(shoppingCart);
         }
        return false;
+    }
+
+    @Override
+    public List<ShoppingCart> getAll() {
+
+        return StorageShoppingCart.shoppingCarts;
     }
 }

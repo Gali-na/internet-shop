@@ -2,7 +2,7 @@ package serviseImpl;
 
 import Storage.StorageProduct;
 import dao.DaoProduct;
-import daoImpl.DaoProductImpl;
+import lib.Inject;
 import model.Product;
 import service.ProductService;
 
@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class ProductServiceImpl implements ProductService {
-    //Нужен инектор
-    DaoProduct daoProduct = new DaoProductImpl();
+    @Inject
+    DaoProduct daoProduct;
 
     @Override
     public Product create(Product product) {
@@ -45,18 +45,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product get(Long idProduct) {
-        if (daoProduct.getById(idProduct).isPresent()) {
-           return daoProduct.getById(idProduct).get();
-        } else {
-            System.out.println("Id entered incorrectly, please re-enter");
-            return null;
-        }
+    public Optional<Product> get(Long id) {
+       return StorageProduct.products.stream()
+                .filter(p->p.getId().equals(id))
+                .findFirst();
     }
 
     @Override
     public List<Product> getAll() {
-        return daoProduct.getAllProduct();
+
+        return daoProduct.getAll();
     }
 
     @Override
@@ -77,10 +75,10 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> productCheckId = StorageProduct.products.stream()
                 .filter(productForStream -> productForStream.getId().equals(id))
                 .findFirst();
-        if (productCheckId.isPresent()) {
+        if (!productCheckId.isPresent()) {
             System.out.println("The product has an incorrect identifier, please re-enter this product");
             return false;
         }
-      return daoProduct.deleteById(id);
+      return daoProduct.delete(id);
     }
 }

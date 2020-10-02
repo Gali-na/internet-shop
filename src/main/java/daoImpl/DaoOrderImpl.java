@@ -2,17 +2,16 @@ package daoImpl;
 
 import Storage.StorageOrder;
 import dao.DaoOrder;
-import dao.DaoShoppingCart;
+import lib.DaoInjectOrder;
 import model.Order;
-import model.ShoppingCart;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@DaoInjectOrder
 public class DaoOrderImpl implements DaoOrder {
-    @Override
+   /* @Override
     public Order completeOrder(ShoppingCart shoppingCart) {
         Order order =new Order();
         order.setProducts(shoppingCart.getProducts());
@@ -20,10 +19,17 @@ public class DaoOrderImpl implements DaoOrder {
         order.setOrderDate(LocalDateTime.now());
        if (StorageOrder.orders.add(order)) {
 
-           DaoShoppingCart dellShopingCart=  new DaoShoppingCartImpl ();
-           dellShopingCart.deleteShoppingCart(shoppingCart.getBucketId());
+           StorageShoppingCart.shoppingCarts.remove(shoppingCart);
            return order;
        }
+        return null;
+    }*/
+
+    @Override
+    public Order create(Order order) {
+        if(StorageOrder.orders.add(order) == true) {
+            return order;
+        }
         return null;
     }
 
@@ -35,13 +41,26 @@ public class DaoOrderImpl implements DaoOrder {
     }
 
     @Override
-    public Order get(Long id) {
+    public Optional<Order> get(Long id) {
       Optional<Order> orderUser= StorageOrder.orders.stream()
                 .filter(order -> order.getOrderId().equals(id))
                 .findFirst();
       if(orderUser.isPresent()) {
-          return orderUser.get();
+          //return orderUser.get();
       }
+        return null;
+    }
+
+    @Override
+    public Order update(Order order) {
+       Optional<Integer> namberOrderForReplace = StorageOrder.orders.stream()
+                .filter(orderInStream -> orderInStream.getOrderId().equals(order.getOrderId()))
+                .map(orderForReplace -> StorageOrder.orders.indexOf(orderForReplace))
+               .findFirst();
+       if (namberOrderForReplace.isPresent()) {
+           StorageOrder.orders.set(namberOrderForReplace.get(),order);
+           return order;
+       }
         return null;
     }
 
