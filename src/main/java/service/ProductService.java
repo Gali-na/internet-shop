@@ -3,11 +3,13 @@ package service;
 import model.Product;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface ProductService {
+public interface ProductService extends GnericServise <Product,Long> {
+
     Product create(Product product);
 
-    Product get(Long id);
+    Optional<Product> get(Long id);
 
     List<Product> getAll();
 

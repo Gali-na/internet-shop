@@ -3,16 +3,23 @@ package service;
 import model.Product;
 import model.ShoppingCart;
 
-public interface ShoppingCartService {
-    ShoppingCart create(ShoppingCart shoppingCart);
+import java.util.List;
+import java.util.Optional;
+
+public interface ShoppingCartService extends GnericServise<ShoppingCart,Long>  {
 
     ShoppingCart addProduct(ShoppingCart shoppingCart, Product product);
 
     boolean deleteProduct(ShoppingCart shoppingCart, Product product);
 
-    void clear(ShoppingCart shoppingCart); //remove all products from the shoppingCart
+    void clear(ShoppingCart shoppingCart);
 
-    ShoppingCart getByUserId(Long userId);
-
-    boolean delete(Long id);
 }
+
+
+
+
+
+
+
+

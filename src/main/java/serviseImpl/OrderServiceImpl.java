@@ -1,75 +1,82 @@
 package serviseImpl;
 
-import Storage.StorageShoppingCart;
+import Storage.StorageOrder;
 import dao.DaoOrder;
-import daoImpl.DaoOrderImpl;
-import service.OrderService;
+import lib.Inject;
 import model.Order;
-import model.ShoppingCart;
+import service.OrderService;
 
 import java.util.List;
 import java.util.Optional;
 
 public class OrderServiceImpl implements OrderService {
 
-    DaoOrder daoOrder = new DaoOrderImpl();
+    @Inject
+    private DaoOrder daoOrder;
 
     @Override
-    public Order completeOrder(ShoppingCart shoppingCart) {
-
-        if(shoppingCart== null) {
-            System.out.println("Your shopping cart is empty, unable to create an order,"
-                   + "unable to create an order");
-            return null;
+    public Order create(Order order) {
+        if(order==null) {
+            System.out.println("The order was created with an error, please re-create the order");
+            return  null;
         }
-        if(shoppingCart.getProducts().size()==0) {
-            System.out.println("The list of products you have selected is empty," +
-                    " please try to select the products again, unable to create an order");
-            return null;
+        if(order.getOrderId()==0) {
+            System.out.println("The order was created incorrectly, the ID was incorrectly specified");
+            return  null;
         }
-        if(shoppingCart.getBucketId()==0) {
-            System.out.println("The order ID was entered incorrectly, please try again, unable to create an order");
-            return null;
+        if(order.getProducts().size()==0) {
+            System.out.println("The order was created by mistake, the list " +
+                    "of products is empty, please create the order again");
+            return  null;
         }
-        Optional<ShoppingCart> cartCheckeId= StorageShoppingCart.shoppingCarts.stream()
-                .filter(cart-> cart.getBucketId().equals(shoppingCart.getBucketId()))
-                .findFirst();
-        if(cartCheckeId.isPresent()) {
-            System.out.println("The order ID was entered incorrectly, please try again, unable to create an order");
-            return null;
+        if(order.getUser()== null) {
+            System.out.println("The order was created by mistake, the user is not specified");
+            return  null;
         } else {
-            return  daoOrder.completeOrder(shoppingCart);
+             StorageOrder.orders.add(order);
+             return  order;
         }
     }
 
     @Override
-    public List<Order> getUserOrders(Long userId) {
-        if( (daoOrder.getUserOrders(userId)).isEmpty()) {
-            System.out.println("This user has no orders");
-            return null;
-        }
-
-        return daoOrder.getUserOrders(userId);
-    }
-
-    @Override
-    public Order get(Long id) {
-       if(daoOrder.get(id) == null) {
-           System.out.println("The specified order does not exist");
-       }
-        return daoOrder.get(id);
+    public Optional<Order> get(Long id) {
+        return  StorageOrder.orders.stream()
+                .filter(o->o.getOrderId().equals(id))
+                .findFirst();
     }
 
     @Override
     public List<Order> getAll() {
-        return daoOrder.getAll();
+        return StorageOrder.orders;
     }
 
     @Override
     public boolean delete(Long id) {
-      if( daoOrder.delete(id)==false) {
-          System.out.println("The specified order does not exist");
-      }
-        return  daoOrder.delete(id);
+       Optional<Order> namberStorageOrder = StorageOrder.orders.stream()
+                .filter(o->o.getOrderId().equals(id))
+                .findFirst();
+       if(namberStorageOrder.isPresent()) {
+           StorageOrder.orders.remove(namberStorageOrder.get());
+           return true;
+       }
+        return false;
+    }
+
+    @Override
+    public Order update(Order order) {
+        Optional<Integer> namberStorageOrder =  StorageOrder.orders.stream()
+                .filter(o->o.getOrderId().equals(order.getOrderId()))
+                .map(o->StorageOrder.orders.indexOf(order))
+                .findFirst();
+        if(namberStorageOrder.isPresent()) {
+            StorageOrder.orders.set(namberStorageOrder.get(),order);
+            return order;
+        }
+        return null;
+    }
+
+    @Override
+    public List<Order> getUserOrders(Long userId) {
+        return StorageOrder.orders;
     }
 }
